@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pressure Players Explorer · SupeRR Selector S2</title>
+<title>Pressure Ratings for the IPL 2027 Auction · Dashboard</title>
 <style>
 :root{
   --bg:#f6f5f2; --surface:#ffffff; --surface-2:#f0efec; --line:#e2e0da; --grid:#ecebe6;
@@ -144,6 +144,22 @@ footer{border-top:1px solid var(--line);padding:18px 0 30px;color:var(--text-3);
 svg text{font-family:inherit}
 .axis text{fill:var(--text-3);font-size:11px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:12px 0 4px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.tile .v{font-size:28px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile .k{font-size:13px;color:var(--text-2);margin-top:4px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:8px 0 0}
+.steps li{counter-increment:s;position:relative;padding:0 0 10px 40px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+@media (max-width:600px){.vs{grid-template-columns:1fr}}
+.vs .card h3{font-size:15px}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;margin-bottom:6px}
+.tag.hi{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.lo{background:var(--mut-bg);color:var(--text-2)}
+.canlist{margin:6px 0 0;padding-left:18px}
+.canlist li{margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -158,6 +174,7 @@ svg text{font-family:inherit}
       <a href="#roles">Role finder</a>
       <a href="#rr">Rajasthan Royals needs</a>
       <a href="#compare">Compare two players</a>
+      <a href="#about">What pressure means</a>
     </nav>
   </div>
 </header>
@@ -261,6 +278,54 @@ svg text{font-family:inherit}
       <div class="search"><input id="cB" type="search" placeholder="Player B" autocomplete="off" aria-label="Player B"><div class="sugg" id="cBs"></div></div>
     </div>
     <div id="cOut"></div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="view" id="v-about">
+  <h2>What “pressure” means here</h2>
+  <p class="lede">A pressure situation is a ball where the match can swing most on what happens next. It is measured from the scoreboard before the ball is bowled, so it never depends on what the player then does.</p>
+
+  <div class="tiles">
+    <div class="tile"><div class="v">25%</div><div class="k">of all deliveries count as pressure balls: 46,709 of 186,833, in 781 matches</div></div>
+    <div class="tile"><div class="v">1.5 pts</div><div class="k">the cut-off: the next ball is expected to move the batting side’s chance of winning by about 1.5 percentage points or more</div></div>
+    <div class="tile"><div class="v">89%</div><div class="k">of pressure balls come in the chase</div></div>
+    <div class="tile"><div class="v">21%</div><div class="k">come in overs 16–20; 39% come in the powerplay</div></div>
+  </div>
+
+  <div class="grid2" style="margin-top:16px">
+    <div class="card">
+      <h3>How a ball is judged, in three steps</h3>
+      <ol class="steps small">
+        <li><b>Chance of winning now.</b> From the match state (balls and wickets left, the target in a chase, phase, competition, season, venue), estimate the batting side’s chance of winning.</li>
+        <li><b>What the next ball could do.</b> For every possible outcome of the next ball (dot, single, boundary, wicket, wide and so on), work out how far that chance would move.</li>
+        <li><b>Average the swing.</b> Weight each swing by how likely the outcome is. That average is the ball’s <i>leverage</i>. The 25% of deliveries with the highest leverage are the pressure balls.</li>
+      </ol>
+      <p class="small muted" style="margin:4px 0 0">A stricter cut-off (top 10%) was also tested as one of the 20 alternative versions of the analysis; see section 9.2 of the report.</p>
+    </div>
+    <div class="card">
+      <h3>Where pressure balls fall</h3>
+      <div id="whereChart"></div>
+      <p class="small" style="margin:6px 0 0">Almost half of all chase deliveries are pressure balls, against about one in twenty first-innings deliveries. A first-innings ball moves a <i>projected</i> result; a chase ball moves a live one. So the ratings are best read as performance in high-stakes, chase-heavy situations.</p>
+    </div>
+  </div>
+
+  <h3 style="margin-top:22px">Pressure is not the same as…</h3>
+  <div class="vs">
+    <div class="card"><span class="tag lo">Not just the death overs</span><p class="small" style="margin:0">Only 21% of pressure balls are in overs 16–20, and 39% are in the powerplay. In an even chase, the early balls carry real stakes too, and they count.</p></div>
+    <div class="card"><span class="tag lo">Not how hard it looks</span><p class="small" style="margin:0">A late chase that is almost lost has <b>low</b> leverage, because one ball changes little. An even chase with 90 balls left has <b>moderate</b> leverage on every ball. Difficulty and stakes are different things; the ratings use stakes.</p></div>
+    <div class="card"><span class="tag lo">Not a feeling</span><p class="small" style="margin:0">Players talk about pressure as a feeling, which no data set can see. What can be measured is how much rides on the next ball, and that is what is used.</p></div>
+    <div class="card"><span class="tag hi">Does it pick out real moments?</span><p class="small" style="margin:0">Yes. Balls with higher expected leverage really do produce bigger swings in the chance of winning (Spearman 0.46 across all deliveries).</p></div>
+  </div>
+
+  <div class="card" style="margin-top:22px">
+    <h3>What the ratings tell you</h3>
+    <ul class="canlist small">
+          <li><b>Who delivers most in these moments</b>, in runs’ worth per 100 pressure balls, against what an average player would produce from the same position. Each player is credited after allowing for who he faced: batters and bowlers are rated together.</li>
+          <li><b>How sure that is.</b> Every rating comes with an uncertainty, and every place on the lists was re-tested in 500 resampled re-runs and 20 alternative versions of the analysis.</li>
+          <li><b>For bowlers, something that carries forward.</b> Ratings fitted on matches up to 10 May 2024 are linked to pressure performance in the later matches (Spearman 0.331, p = 0.0005).</li>
+        </ul>
+    <p class="note">The full method, the formulas and every check are in the PDF report: sections 4 to 6 for the method and section 9 for the checks.</p>
   </div>
 </section>
 </main>
@@ -521,8 +586,19 @@ function cmp(){
    <p class="small muted" style="margin:0">Overlapping ranges mean the data cannot reliably separate the two players.${(!a.ev||!b.ev)?' * Every rated player has at least 100 pressure balls; the report gives the exact count only for the top 15 in each role and its named players.':''}${(a.var==null||b.var==null)?' † The 20 alternative versions were tracked for the top 15 in each role only.':''}</p></div>`;
   $('#cOut').innerHTML=h;
 }
+
+function whereChart(){
+  const rows=[['Chase deliveries that are pressure balls',46.3],['First-innings deliveries that are pressure balls',5.4]];
+  const W=520,L=0,rowH=46,H=rows.length*rowH+4,bw=W-60;
+  let s='';rows.forEach(([lab,v],i)=>{const y=i*rowH;
+    s+=`<g data-tip="${esc(lab)}: ${Math.round(v)}%"><text x="0" y="${y+14}" font-size="12" fill="var(--text-2)">${esc(lab)}</text>
+      <rect x="0" y="${y+20}" width="${bw}" height="14" rx="4" fill="var(--grid)"/>
+      <rect x="0" y="${y+20}" width="${Math.max(4,bw*v/100)}" height="14" rx="4" fill="${i===0?'var(--accent)':'var(--s1)'}"/>
+      <text x="${bw+8}" y="${y+32}" font-size="13" font-weight="700" fill="var(--text)">${Math.round(v)}%</text></g>`;});
+  $('#whereChart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:${W}px" role="img" aria-label="Share of deliveries that are pressure balls: 46% of chase deliveries, 5% of first-innings deliveries">${s}</svg>`;
+}
 /* ---------- routing ---------- */
-const views=['lists','player','roles','rr','compare'];
+const views=['lists','player','roles','rr','compare','about'];
 function go(h){location.hash=h;}
 function route(){
   const h=(location.hash||'#lists').slice(1);let v=h.split('-')[0];if(!views.includes(v))v='lists';
@@ -544,7 +620,7 @@ $('#quick').innerHTML='<span class="small muted" style="align-self:center">Try:<
 segInit($('#fRole'),'role',F,()=>{F.sort='rk';F.dir=1;finder();});segInit($('#fPhase'),'phase',F,finder);
 $('#fShare').oninput=e=>{F.share=+e.target.value;$('#fShareV').textContent=F.share+'%';finder();};
 $('#fPool').onchange=e=>{F.pool=e.target.checked;finder();};$('#fPak').onchange=e=>{F.pak=e.target.checked;finder();};
-finder();rrView();
+finder();rrView();whereChart();
 segInit($('#cRole'),'role',C,()=>{const r=C.role;const top=D.filter(p=>p[r]).sort((x,y)=>x[r].rk-y[r].rk);if(!BY.get(C.a)[r])C.a=top[0].id;if(!BY.get(C.b)[r]||C.b===C.a)C.b=top.find(p=>p.id!==C.a).id;cmp();});
 attachAC($('#cA'),$('#cAs'),id=>{C.a=id;cmp();},p=>!!p[C.role]);
 attachAC($('#cB'),$('#cBs'),id=>{C.b=id;cmp();},p=>!!p[C.role]);
